@@ -816,3 +816,9 @@ select:-moz-focusring {
 .medium-zoom-image--opened {
     background: var(--zoom-img-bg-color)!important;
 }
+
+#for-drission-page-svg-complex{
+    opacity: 0.1;
+    height:0.1px;
+    width: 0.1px;
+}

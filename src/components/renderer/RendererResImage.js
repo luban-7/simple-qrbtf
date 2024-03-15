@@ -7,7 +7,7 @@ import {getExactValue, getIdNum} from "../../utils/util";
 
 function listPoints({ qrcode, params, icon }) {
     if (!qrcode) return []
-console.log(icon)
+    // console.log(icon)
     const nCount = qrcode.getModuleCount();
     const typeTable = getTypeTable(qrcode);
     const pointList = new Array(nCount);

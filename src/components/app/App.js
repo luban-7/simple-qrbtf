@@ -35,29 +35,29 @@ function App({ dispatch }) {
     const updateDownloadData = useCallback((downloadData) => dispatch(loadDownloadData(downloadData)), []);
     setScrollbarWidthProp()
 
-    useEffect(() => {
-        login().then(() => {
-            getDownloadCount((res) => {
-                let downloadData = [];
-                res.data.forEach((item) => {
-                    downloadData[item.value] = item.count;
-                });
-                dispatch(loadDownloadData(downloadData));
-            });
-        })
-    })
+    // useEffect(() => {
+    //     login().then(() => {
+    //         getDownloadCount((res) => {
+    //             let downloadData = [];
+    //             res.data.forEach((item) => {
+    //                 downloadData[item.value] = item.count;
+    //             });
+    //             dispatch(loadDownloadData(downloadData));
+    //         });
+    //     })
+    // })
 
     return (
         <div className="App">
             <header className="App-header">
                 <div className="Layout">
                     <div className="Qr-outer">
-                        <PartHeader/>
                         <PartStylesViewer/>
                         <PartParams/>
+                        <PartHeader/>
                         <PartDownloadViewer updateDownloadData={updateDownloadData}/>
-                        <PartMore/>
-                        <PartFooter/>
+                        {/* <PartMore/>
+                        <PartFooter/> */}
                     </div>
                 </div>
             </header>

@@ -5,10 +5,10 @@ import QrbtfLogo from "../svg/QrbtfLogo";
 
 const PartHeader = () => (
     <div className="Qr-Centered">
-        <div>
+        {/* <div>
             <h1 className="Qr-title"><QrbtfLogo className="Qr-title-svg" /></h1>
-        </div>
-        <p className="Qr-subtitle">参数化二维码生成器{/* <sup className="Gray">测试版</sup>*/}</p>
+        </div> */}
+        {/* <p className="Qr-subtitle">参数化二维码生成器 <sup className="Gray">测试版</sup></p> */}
         <InputText/>
     </div>
 )

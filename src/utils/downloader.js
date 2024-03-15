@@ -5,14 +5,16 @@ const MIME = { "jpg": "image/jpeg", "png": "image/png" };
 
 export function saveSvg(value, content) {
     let htmlContent = [svgHead + content]
-    let bl = new Blob(htmlContent, {type: "image/svg+xml"})
-    let a = document.createElement("a")
-    let filename = "QRcode_" + value + ".svg"
+    // let bl = new Blob(htmlContent, {type: "image/svg+xml"})
+    // let a = document.createElement("a")
+    // let filename = "QRcode_" + value + ".svg"
 
-    a.href = URL.createObjectURL(bl)
-    a.download = filename
-    a.hidden = true
-    a.click()
+    // a.href = URL.createObjectURL(bl)
+    // a.download = filename
+    // a.hidden = true
+    // 取消直接下载
+    // a.click()
+    return htmlContent
 }
 
 export function saveImg(value, content, width, height, type) {
@@ -51,12 +53,13 @@ export function saveImg(value, content, width, height, type) {
             // Will result in a download popup for chrome and the
             // image opening in a new tab for others.
 
-            let a = document.createElement('a');
-            let data = canvas.toDataURL(MIME[type], 0.8);
-            a.setAttribute('href', data)
-            a.setAttribute('target', 'download')
-            a.setAttribute('download', filename);
-            a.click();
+            // let a = document.createElement('a');
+            let data = canvas.toDataURL(MIME[type], 1);
+            // a.setAttribute('href', data)
+            // a.setAttribute('target', 'download')
+            // a.setAttribute('download', filename);
+            // 取消直接下载
+            // a.click();
 
             resolve(data)
         };
