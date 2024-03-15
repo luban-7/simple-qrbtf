@@ -1,93 +1,96 @@
-<h1 align="center"><img alt="QRBTF" src=".github/qrbtf-logo.svg" height="75"></h1>
 
-<p align="center">
-    URL: <a href="https://qrbtf.com" rel="noopener noreferrer" target="_blank">qrbtf.com</a><br />
-    QRBTF is a simple web app to beautify your QR code.
-</p>
+## 前端修改：
+[预览](https://zcbot.gitee.io/qrbtf/)
 
-<p align="center">
-    <img src="public/img/QRcodes.jpg">
-</p>
+修改自[qrbtf](https://github.com/latentcat/qrbtf)，为了实现通过API调用生成二维码，对前端页面做了一些修改：
 
-## Features
+* 简化页面内容，提高爬虫定位元素速度
+* 取消点击直接下载，通过API获取生成的二维码，无需下载
+* 增加生成API参数按钮，方便通过页面修改样式并生成API请求参数
+* 增加了一个不可见的输入框，方便爬虫对接
 
-* Various Art QR Code Styles
-* Parametric Design
-* No Backend Required
-* Support for SVG Downloads
 
-中文介绍: 
+## API实现：
+API基于[DrissionPage](https://github.com/g1879/DrissionPage)实现，并通过[flask](https://flask.palletsprojects.com/en/3.0.x/)提供接口，可实现通过API调用生成`qrbtf`的全样式二维码，返回结果可选`SVG`、`Base64`编码的`JPG`或`PNG`(`SVG`格式最快，可以实现100ms以内响应)。
 
-* [如何制作一个漂亮的二维码](https://mp.weixin.qq.com/s/_Oy9I9FqPXhfwN9IUhf6_g)
-* [QRBTF 开源啦！来写个二维码样式吧～](https://mp.weixin.qq.com/s/GFEMCWQu3e2qhTuBabnHmQ)
+目前接口实现较简陋，只能单线程生成，且参数校验不完善，后续有时间会继续完善，并提供可以直接调用的接口。
 
-## QRBTF Website
 
-### Installation
+```python
 
-``` bash
-git clone https://github.com/ciaochaos/qrbtf.git
-cd qrbtf
-npm install
-npm start
+import threading
+
+from DrissionPage import ChromiumPage, ChromiumOptions
+from flask import Flask, request
+
+app = Flask("__naem__")
+co = ChromiumOptions()
+co.set_argument('--incognito')
+co.set_argument('--no-sandbox')
+# 设置为无头模式
+# co.headless()
+
+page = ChromiumPage(co)
+page.quit()
+page = ChromiumPage(co)
+url = 'https://zcbot.gitee.io/qrbtf/'
+# url = 'http://127.0.0.1:3000'
+
+page.get(url)
+qrbtf_tab = page.get_tab()
+special_input = qrbtf_tab.ele('#for-drission-page-svg-complex')
+lock = threading.Lock()
+
+
+@app.route('/qrbtf', methods=['POST'])
+def qrbtf():
+    data = str(request.get_data(), encoding='utf-8')
+    if not data.strip():
+        return "参数不能为空"
+    return get_qrbtf(data)
+
+
+def get_qrbtf(content):
+    lock.acquire()
+    special_input.input(content)
+    special_input.click.multi()
+    data = special_input.attr('placeholder')
+    special_input.set.value('')
+    lock.release()
+    return data
+
+
+# 启动实施（只在当前模块运行）
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8900)
+    page.close()
+
 ```
 
-### Usage
+调用例子：
+```shell
 
-1. Open [qrbtf.com](https://qrbtf.com).
-2. Enter a URL or text.
-3. Select a style.
-4. Adjust parameters.
-5. Download `JPG` or `SVG`.
-
-## React Component (react-qrbtf)
-
-See [CPunisher / react-qrbtf](https://github.com/cpunisher/react-qrbtf) for more information.
-
-``` bash
-npm install react-qrbtf --save
+curl --location --request POST 'http://127.0.0.1:8900/qrbtf' \
+--header 'User-Agent: Apifox/1.0.0 (https://apifox.com)' \
+--header 'Content-Type: application/json' \
+--header 'Accept: */*' \
+--header 'Host: 127.0.0.1:8900' \
+--header 'Connection: keep-alive' \
+--data-raw '{
+    "text": "二维码内容",
+    "style": 2,
+    "level": 0,
+    "icon": {
+        "enabled": 0,
+        "src": "",
+        "scale": 22
+    },
+    "type": "png",
+    "params": [
+        70,
+        70,
+        90,
+        1
+    ]
+}'
 ```
-
-### Include the Component
-
-```js
-import React from 'react'
-import { QRNormal } from 'react-qrbtf'
-
-class Component extends React.Component {
-
-    render() {
-        return (
-            <QRNormal
-                value="react-qrbtf"
-                className="my-qrcode"
-                styles={{ svg: {width: "200px"} }}
-                type="round"
-                size={50}
-                opacity={80}
-                posType="planet"
-                otherColor="#33CCCC"
-                posColor="#009999"
-            />
-        )
-    }
-}
-```
-
-## Third-Party Project
-
-* [gexin1 / beautify-qrcode](https://github.com/gexin1/beautify-qrcode)
-
-## Author
-
-* [ciaochaos](https://github.com/ciaochaos)
-* [CPunisher](https://github.com/CPunisher)
-
-## Dependency
-
-* [davidshimjs / qrcode](https://github.com/davidshimjs/qrcodejs)
-* [cozmo / jsQR](https://github.com/cozmo/jsQR)
-
-## License
-
-[GPLv3](LICENSE)
