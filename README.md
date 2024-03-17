@@ -13,7 +13,10 @@
 ## API实现：
 API基于[DrissionPage](https://github.com/g1879/DrissionPage)实现，并通过[flask](https://flask.palletsprojects.com/en/3.0.x/)提供接口，可实现通过API调用生成`qrbtf`的全样式二维码，返回结果可选`SVG`、`Base64`编码的`JPG`或`PNG`(`SVG`格式最快，可以实现100ms以内响应)。
 
-目前接口实现较简陋，只能单线程生成，且参数校验不完善，后续有时间会继续完善，并提供可以直接调用的接口。
+目前接口实现较简陋，只能单线程生成，且参数校验不完善，后续有时间会继续完善。
+
+测试接口：`https://service-3jvy6uvi-1257114609.gz.tencentapigw.com.cn/qrbtf`
+
 
 
 ```python
